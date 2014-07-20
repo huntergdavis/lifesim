@@ -1,9 +1,11 @@
 package com.hunterdavis.lifesim;
 
+import java.util.Arrays;
+
 /**
  * Created by hunter on 7/19/14.
  */
-public class DNA {
+public class DNA implements java.io.Serializable {
 
     public Protein proteinMatrix[][];
 
@@ -17,4 +19,27 @@ public class DNA {
             }
         }
     };
+
+    public DNA(DNA parent) {
+        for(int i = 0; i < PROTEIN_SIZE; i++) {
+            for (int j = 0; j < PROTEIN_SIZE; j++) {
+                proteinMatrix[i][j] = new Protein(parent.proteinMatrix[i][j]);
+            }
+        }
+    }
+
+    public void tick() {
+        for(int i = 0; i < PROTEIN_SIZE; i++) {
+            for (int j = 0; j < PROTEIN_SIZE; j++) {
+                proteinMatrix[i][j].tick();
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DNA{" +
+                "proteinMatrix=" + Arrays.toString(proteinMatrix) +
+                '}';
+    }
 }

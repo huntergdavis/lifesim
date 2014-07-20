@@ -7,19 +7,27 @@ import java.util.Arrays;
  */
 public class GameBoard implements java.io.Serializable {
 
+    public final String TAG = "GameBoard";
+
     public Microbe[][] lifeMatrix;
 
     public int currentWidth;
     public int currentHeight;
 
     public GameBoard(int width, int height) {
-        lifeMatrix = new Microbe[width][height];
 
+        LoggingAndTime.logWithTiming(TAG,"About to instantiate life matrix");
+        lifeMatrix = new Microbe[width][height];
+        LoggingAndTime.logWithTiming(TAG,"Life Matrix Instantiated");
+
+        LoggingAndTime.logWithTiming(TAG,"About to iterate through life Matrix");
         for(int i = 0; i < width; i++) {
             for (int j=0;j<height;j++) {
                 lifeMatrix[i][j] = new Microbe();
             }
         }
+        LoggingAndTime.logWithTiming(TAG,"Finished Iterating Through Life Matrix");
+
     }
 
     public GameBoard(GameBoard loadGame) {

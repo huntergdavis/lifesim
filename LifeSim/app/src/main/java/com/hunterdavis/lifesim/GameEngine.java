@@ -5,6 +5,8 @@ package com.hunterdavis.lifesim;
  */
 public class GameEngine implements java.io.Serializable {
 
+    public final String TAG = "GameEngine";
+
     public long simulatorAgeInTicks;
 
     public GameBoard currentGameBoard;
@@ -18,7 +20,10 @@ public class GameEngine implements java.io.Serializable {
         width = 24;
         height = 24;
 
+        LoggingAndTime.logWithTiming(TAG,"About to instantiate game board");
         currentGameBoard = new GameBoard(width,height);
+        LoggingAndTime.logWithTiming(TAG,"Finished instantiation of game board");
+
     }
 
     public GameEngine(GameEngine loadGame) {

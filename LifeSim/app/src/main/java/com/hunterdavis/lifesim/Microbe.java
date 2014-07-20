@@ -5,14 +5,20 @@ package com.hunterdavis.lifesim;
  */
 public class Microbe implements java.io.Serializable {
 
+    public static final String TAG = "Microbe";
     public DNA dna;
     public int health;
     public int age;
 
     public Microbe() {
+        //LoggingAndTime.logWithTiming(TAG,"About to instantiate DNA in microbe");
+
         dna = new DNA();
         health=100;
         age=0;
+
+        //LoggingAndTime.logWithTiming(TAG,"Microbe DNA Instantiated");
+
     }
 
     public Microbe(Microbe parent) {

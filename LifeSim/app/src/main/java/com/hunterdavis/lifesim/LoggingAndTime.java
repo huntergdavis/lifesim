@@ -2,7 +2,10 @@ package com.hunterdavis.lifesim;
 
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by hunter on 7/20/14.
@@ -14,9 +17,21 @@ public class LoggingAndTime {
 
     public static final boolean loggingEnabled = true;
 
+    public static final boolean loggingOnlyForSelectedTags = true;
+
+    public static final Set<String> allowedTags = new HashSet<String>(Arrays.asList(
+            new String[] {"GameBoard","LifeScreen","Microbe","DNA"}
+    ));
+
     public static void logWithTiming(String tag, String message) {
         if(!loggingEnabled) {
             return;
+        }
+
+        if(loggingOnlyForSelectedTags) {
+            if (!allowedTags.contains(tag)) {
+                return;
+            }
         }
 
         long currentTime = System.currentTimeMillis();

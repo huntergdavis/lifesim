@@ -44,11 +44,14 @@ public class GameBoard implements java.io.Serializable {
     }
 
     public void tick() {
+        LoggingAndTime.logWithTiming(TAG, "About to tick life matrix");
         for(int i = 0; i < currentWidth; i++) {
             for (int j=0;j<currentHeight;j++) {
                 lifeMatrix[i][j].tick();
             }
         }
+        LoggingAndTime.logWithTiming(TAG, "Finished ticking life matrix");
+
     }
 
     @Override

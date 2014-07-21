@@ -11,13 +11,13 @@ public class Microbe implements java.io.Serializable {
     public int age;
 
     public Microbe() {
-        //LoggingAndTime.logWithTiming(TAG,"About to instantiate DNA in microbe");
+        LoggingAndTime.logWithTiming(TAG,"About to instantiate DNA in microbe");
 
         dna = new DNA();
         health=100;
         age=0;
 
-        //LoggingAndTime.logWithTiming(TAG,"Microbe DNA Instantiated");
+        LoggingAndTime.logWithTiming(TAG,"Microbe DNA Instantiated");
 
     }
 

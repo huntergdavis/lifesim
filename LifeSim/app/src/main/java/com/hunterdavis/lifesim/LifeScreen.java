@@ -15,6 +15,8 @@ import java.io.IOException;
 
 public class LifeScreen extends Activity {
 
+    public static final String TAG = "LifeScreen";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +57,13 @@ public class LifeScreen extends Activity {
 
             // create a game simulation
             GameEngine testEngine = new GameEngine();
-            //testEngine.tick();
-            //testEngine.tick();
+
+            LoggingAndTime.logWithTiming(TAG, "About to tick game engine 1000 times");
+            for(int i = 0; i < 1000; i++) {
+                testEngine.tick();
+            }
+            LoggingAndTime.logWithTiming(TAG, "Just ticked game engine 1000 times");
+
         }
 
         @Override

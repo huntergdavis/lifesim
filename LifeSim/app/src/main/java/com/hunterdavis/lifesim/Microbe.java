@@ -34,6 +34,10 @@ public class Microbe implements java.io.Serializable {
         dna.tick();
     }
 
+    public void mutate(float mutationRate) {
+        dna.mutate(mutationRate);
+    }
+
     @Override
     public String toString() {
         return "Microbe{" +

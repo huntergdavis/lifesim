@@ -1,76 +1,134 @@
 package com.hunterdavis.lifesim;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import org.andengine.engine.camera.Camera;
+import org.andengine.engine.options.EngineOptions;
+import org.andengine.engine.options.ScreenOrientation;
+import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.Entity;
+import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.util.FPSLogger;
+import org.andengine.entity.util.ScreenCapture;
+import org.andengine.entity.util.ScreenCapture.IScreenCaptureCallback;
+import org.andengine.input.touch.TouchEvent;
+import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.FileUtils;
 
-import java.io.IOException;
+import android.widget.Toast;
 
+/*
+    Now using AndEngine for displaying life
+ */
+public class LifeScreen extends SimpleBaseGameActivity {
+    // ===========================================================
+    // Constants
+    // ===========================================================
 
-public class LifeScreen extends Activity {
+    private final static String TAG = "LifeScreen";
 
-    public static final String TAG = "LifeScreen";
+    private static final int CAMERA_WIDTH = 1000;
+    private static final int CAMERA_HEIGHT = 600;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_life_screen);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new LifeSimFragment())
-                    .commit();
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.life_screen, menu);
-        return true;
-    }
+    private GameEngine testEngine;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public EngineOptions onCreateEngineOptions() {
+        final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+
+        return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class LifeSimFragment extends Fragment {
+    @Override
+    public void onCreateResources() {
 
-        public LifeSimFragment() {
+    }
 
-            // create a game simulation
-            GameEngine testEngine = new GameEngine();
+    @Override
+    public Scene onCreateScene() {
 
-            LoggingAndTime.logWithTiming(TAG, "About to tick game engine 1000 times");
-            for(int i = 0; i < 1000; i++) {
-                testEngine.tick();
+        // game engine initialization.  is this a good place?
+
+        // create a game simulation
+        // a big one
+        LoggingAndTime.logWithTiming(TAG, "Initializing Engine");
+        testEngine = new GameEngine();
+        LoggingAndTime.logWithTiming(TAG, "Finished Initializing Engine");
+
+
+        this.mEngine.registerUpdateHandler(new FPSLogger());
+
+        final Scene scene = new Scene();
+        final ScreenCapture screenCapture = new ScreenCapture();
+        scene.attachChild(screenCapture);
+        scene.setOnSceneTouchListener(new IOnSceneTouchListener() {
+            @Override
+            public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+                if(pSceneTouchEvent.isActionDown()) {
+                    screenCapture.capture(180, 60, 360, 360, FileUtils.getAbsolutePathOnExternalStorage(LifeScreen.this, "Screen_" + System.currentTimeMillis() + ".png"), new IScreenCaptureCallback() {
+                        @Override
+                        public void onScreenCaptured(final String pFilePath) {
+                            LifeScreen.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LoggingAndTime.logWithTiming(TAG, "About to tick game engine 1000 times");
+                                    for(int i = 0; i < 1000; i++) {
+                                        testEngine.tick();
+                                    }
+                                    LoggingAndTime.logWithTiming(TAG, "Just ticked game engine 1000 times");
+
+                                    Toast.makeText(LifeScreen.this, "Screenshot: " + pFilePath + " taken!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onScreenCaptureFailed(final String pFilePath, final Exception pException) {
+                            LifeScreen.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(LifeScreen.this, "FAILED capturing Screenshot: " + pFilePath + " !", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                }
+                return true;
             }
-            LoggingAndTime.logWithTiming(TAG, "Just ticked game engine 1000 times");
+        });
 
-        }
+        scene.setBackground(new Background(0, 0, 0));
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_life_screen, container, false);
-            return rootView;
-        }
+		/* Create the rectangles. */
+        final Rectangle rect1 = this.makeColoredRectangle(-180, -180, 1, 0, 0);
+        final Rectangle rect2 = this.makeColoredRectangle(0, -180, 0, 1, 0);
+        final Rectangle rect3 = this.makeColoredRectangle(0, 0, 0, 0, 1);
+        final Rectangle rect4 = this.makeColoredRectangle(-180, 0, 1, 1, 0);
+
+        final Entity rectangleGroup = new Entity(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2);
+
+        rectangleGroup.attachChild(rect1);
+        rectangleGroup.attachChild(rect2);
+        rectangleGroup.attachChild(rect3);
+        rectangleGroup.attachChild(rect4);
+
+        scene.attachChild(rectangleGroup);
+
+        return scene;
     }
+
+    private Rectangle makeColoredRectangle(final float pX, final float pY, final float pRed, final float pGreen, final float pBlue) {
+        final Rectangle coloredRect = new Rectangle(pX, pY, 180, 180, this.getVertexBufferObjectManager());
+        coloredRect.setColor(pRed, pGreen, pBlue);
+        return coloredRect;
+    }
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
+
+    // ===========================================================
+    // Inner and Anonymous Classes
+    // ===========================================================
 }

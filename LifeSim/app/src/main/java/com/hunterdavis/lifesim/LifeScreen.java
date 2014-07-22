@@ -66,17 +66,18 @@ public class LifeScreen extends SimpleBaseGameActivity {
             @Override
             public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
                 if(pSceneTouchEvent.isActionDown()) {
+                    LoggingAndTime.logWithTiming(TAG, "About to tick game engine 1000 times");
+                    for(int i = 0; i < 1000; i++) {
+                        testEngine.tick();
+                    }
+                    LoggingAndTime.logWithTiming(TAG, "Just ticked game engine 1000 times");
+
                     screenCapture.capture(180, 60, 360, 360, FileUtils.getAbsolutePathOnExternalStorage(LifeScreen.this, "Screen_" + System.currentTimeMillis() + ".png"), new IScreenCaptureCallback() {
                         @Override
                         public void onScreenCaptured(final String pFilePath) {
                             LifeScreen.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    LoggingAndTime.logWithTiming(TAG, "About to tick game engine 1000 times");
-                                    for(int i = 0; i < 1000; i++) {
-                                        testEngine.tick();
-                                    }
-                                    LoggingAndTime.logWithTiming(TAG, "Just ticked game engine 1000 times");
 
                                     Toast.makeText(LifeScreen.this, "Screenshot: " + pFilePath + " taken!", Toast.LENGTH_SHORT).show();
                                 }

@@ -15,6 +15,7 @@ import org.andengine.entity.util.ScreenCapture.IScreenCaptureCallback;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.FileUtils;
+import org.andengine.util.color.Color;
 
 import android.widget.Toast;
 
@@ -72,51 +73,78 @@ public class LifeScreen extends SimpleBaseGameActivity {
                     }
                     LoggingAndTime.logWithTiming(TAG, "Just ticked game engine 1000 times");
 
-                    screenCapture.capture(180, 60, 360, 360, FileUtils.getAbsolutePathOnExternalStorage(LifeScreen.this, "Screen_" + System.currentTimeMillis() + ".png"), new IScreenCaptureCallback() {
-                        @Override
-                        public void onScreenCaptured(final String pFilePath) {
-                            LifeScreen.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    Toast.makeText(LifeScreen.this, "Screenshot: " + pFilePath + " taken!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onScreenCaptureFailed(final String pFilePath, final Exception pException) {
-                            LifeScreen.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(LifeScreen.this, "FAILED capturing Screenshot: " + pFilePath + " !", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    });
                 }
                 return true;
             }
         });
 
-        scene.setBackground(new Background(0, 0, 0));
+        //scene.setBackground(new Background(0, 0, 0));
 
 		/* Create the rectangles. */
-        final Rectangle rect1 = this.makeColoredRectangle(-180, -180, 1, 0, 0);
-        final Rectangle rect2 = this.makeColoredRectangle(0, -180, 0, 1, 0);
-        final Rectangle rect3 = this.makeColoredRectangle(0, 0, 0, 0, 1);
-        final Rectangle rect4 = this.makeColoredRectangle(-180, 0, 1, 1, 0);
+        //final Rectangle rect1 = this.makeColoredRectangle(-180, -180, 1, 0, 0);
+        //final Rectangle rect2 = this.makeColoredRectangle(0, -180, 0, 1, 0);
+        //final Rectangle rect3 = this.makeColoredRectangle(0, 0, 0, 0, 1);
+        //final Rectangle rect4 = this.makeColoredRectangle(-180, 0, 1, 1, 0);
 
-        final Entity rectangleGroup = new Entity(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2);
+        //final Entity rectangleGroup = new Entity(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2);
 
-        rectangleGroup.attachChild(rect1);
-        rectangleGroup.attachChild(rect2);
-        rectangleGroup.attachChild(rect3);
-        rectangleGroup.attachChild(rect4);
+        //rectangleGroup.attachChild(rect1);
+        //rectangleGroup.attachChild(rect2);
+        //rectangleGroup.attachChild(rect3);
+        //rectangleGroup.attachChild(rect4);
 
-        scene.attachChild(rectangleGroup);
+        //scene.attachChild(rectangleGroup);
+
+
+
 
         return scene;
+    }
+
+    private void refreshMicrobeView() {
+
+        for(int i = 0;i<CAMERA_WIDTH;i++) {
+            for (int j = 0; j < CAMERA_HEIGHT;j++) {
+                //TODO - hunter, figure out pixel vs rectangle in andengine and what's the what 
+                Color color = getColorForPixelBasedOnCurrentGameBoard(i,j);
+            }
+        }
+
+
+        for (int i = 0; i < testEngine.height; i++) {
+            for( int j = 0; j < testEngine.width; j++) {
+                for (int k = 0;k < DNA.PROTEIN_SIZE;k++) {
+                    for (int l = 0; l < DNA.PROTEIN_SIZE;l++) {
+                        testEngine.currentGameBoard.lifeMatrix[i][j].dna.proteinMatrix[k][l]
+                    }
+                }
+            }
+        }
+    }
+
+    public Color getColorForPixelBasedOnCurrentGameBoard(int x, int y) {
+
+        // first, find the bug number for X,Y
+        // a bug is the size of it's DNA in terms of visual representation
+        int bugNumberX = x / DNA.PROTEIN_SIZE;
+        int bugNumberY = y / DNA.PROTEIN_SIZE;
+        int innerOffsetX = x % DNA.PROTEIN_SIZE;
+        int innerOffsetY = y % DNA.PROTEIN_SIZE;
+
+        int proteinTypeAsInt = testEngine.currentGameBoard.lifeMatrix[bugNumberX][bugNumberY].dna.proteinMatrix[innerOffsetX][innerOffsetY].getCurrentProteinTypeAsInt();
+        float colorPercentage = proteinTypeAsInt / Protein.getNumberOfProteinTypes();
+
+        // red, green,blue as percentages.
+        if (proteinTypeAsInt < colorPercentage/3) {
+            // red set, with some variation
+            return new Color(colorPercentage,colorPercentage/3,colorPercentage/3);
+        }else if (proteinTypeAsInt < 2*colorPercentage/3) {
+            // blue set, with some variation
+            return new Color(colorPercentage/3,colorPercentage/3,colorPercentage);
+        }else {
+            // green set
+            return new Color(colorPercentage/3,colorPercentage,colorPercentage/3);
+        }
     }
 
     private Rectangle makeColoredRectangle(final float pX, final float pY, final float pRed, final float pGreen, final float pBlue) {

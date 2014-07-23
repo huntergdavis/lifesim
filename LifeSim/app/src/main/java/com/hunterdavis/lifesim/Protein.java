@@ -62,6 +62,14 @@ public class Protein implements java.io.Serializable {
         return PROTEIN_TYPES.values()[pick];
     }
 
+    public static int getNumberOfProteinTypes() {
+        return PROTEIN_TYPES.values().length;
+    }
+
+    public int getCurrentProteinTypeAsInt() {
+        return proteinType.ordinal();
+    }
+
 
     @Override
     public String toString() {

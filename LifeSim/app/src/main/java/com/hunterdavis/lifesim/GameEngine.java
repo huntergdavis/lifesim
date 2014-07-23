@@ -17,8 +17,8 @@ public class GameEngine implements java.io.Serializable {
     public GameEngine() {
         simulatorAgeInTicks = 0;
 
-        width = 50;
-        height = 30;
+        width = 10;
+        height = 6;
 
         LoggingAndTime.logWithTiming(TAG,"About to instantiate game board");
         currentGameBoard = new GameBoard(width,height);

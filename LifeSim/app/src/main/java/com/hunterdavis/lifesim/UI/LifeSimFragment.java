@@ -33,7 +33,7 @@ public class LifeSimFragment extends Fragment {
 
     public LifeSimFragment() {
         // create a backing Bitmap
-        Bitmap.Config bitmapConf = Bitmap.Config.ARGB_8888; // see other conf types if switch to alpha
+        Bitmap.Config bitmapConf = Bitmap.Config.RGB_565; // see other conf types if switch to alpha
         backingBitmap = Bitmap.createBitmap(1000, 600, bitmapConf);
 
         // create a game simulation
@@ -91,15 +91,17 @@ public class LifeSimFragment extends Fragment {
         int innerOffsetY = y % DNA.PROTEIN_SIZE;
 
         int proteinTypeAsInt = testEngine.currentGameBoard.lifeMatrix[bugNumberX][bugNumberY].dna.proteinMatrix[innerOffsetX][innerOffsetY].getCurrentProteinTypeAsInt();
-        int colorPercentage = ((proteinTypeAsInt / Protein.getNumberOfProteinTypes()) * 255);
+
+        double percentageOfProtein = proteinTypeAsInt*255 / Protein.getNumberOfProteinTypes();
+        int colorPercentage = (int) percentageOfProtein;
 
         int lowThreshold = colorPercentage / 3;
 
         // red, green,blue as percentages.
-        if (proteinTypeAsInt < lowThreshold) {
+        if (colorPercentage < 85) {
             // red set, with some variation
             return Color.rgb(colorPercentage, lowThreshold,lowThreshold);
-        } else if (proteinTypeAsInt < 2 * lowThreshold) {
+        } else if (colorPercentage < 170) {
             // blue set, with some variation
             return Color.rgb(lowThreshold, lowThreshold, colorPercentage);
         } else {

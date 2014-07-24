@@ -4,6 +4,8 @@ import android.app.Application;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
+import com.hunterdavis.lifesim.util.SavingAndLoading;
+
 import java.io.IOException;
 
 /**

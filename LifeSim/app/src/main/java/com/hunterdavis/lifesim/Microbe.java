@@ -1,5 +1,7 @@
 package com.hunterdavis.lifesim;
 
+import com.hunterdavis.lifesim.util.LoggingAndTime;
+
 /**
  * Created by hunter on 7/19/14.
  */
@@ -11,7 +13,7 @@ public class Microbe implements java.io.Serializable {
     public int age;
 
     public Microbe() {
-        LoggingAndTime.logWithTiming(TAG,"About to instantiate DNA in microbe");
+        LoggingAndTime.logWithTiming(TAG, "About to instantiate DNA in microbe");
 
         dna = new DNA();
         health=100;

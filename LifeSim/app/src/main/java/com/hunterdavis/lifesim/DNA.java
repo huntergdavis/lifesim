@@ -10,7 +10,7 @@ public class DNA implements java.io.Serializable {
 
     public Protein proteinMatrix[][];
 
-    public static final int PROTEIN_SIZE = 16;
+    public static final int PROTEIN_SIZE = 25;
     public static int DEFAULT_MUTATION_RATE_PERCENTAGE = 25;
 
 

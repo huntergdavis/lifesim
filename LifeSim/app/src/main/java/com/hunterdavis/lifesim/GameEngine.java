@@ -1,5 +1,7 @@
 package com.hunterdavis.lifesim;
 
+import com.hunterdavis.lifesim.util.LoggingAndTime;
+
 /**
  * Created by hunter on 7/19/14.
  */
@@ -17,10 +19,10 @@ public class GameEngine implements java.io.Serializable {
     public GameEngine() {
         simulatorAgeInTicks = 0;
 
-        width = 10;
-        height = 6;
+        width = 40;
+        height = 24;
 
-        LoggingAndTime.logWithTiming(TAG,"About to instantiate game board");
+        LoggingAndTime.logWithTiming(TAG, "About to instantiate game board");
         currentGameBoard = new GameBoard(width,height);
         LoggingAndTime.logWithTiming(TAG,"Finished instantiation of game board");
 

@@ -14,7 +14,7 @@
 // Please contact the author if you need another license.
 // This module is provided "as is", without warranties of any kind.
 
-package com.hunterdavis.lifesim;
+package com.hunterdavis.lifesim.util;
 
 /**
  * A Base64 encoder/decoder.

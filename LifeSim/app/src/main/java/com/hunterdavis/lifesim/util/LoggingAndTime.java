@@ -1,4 +1,4 @@
-package com.hunterdavis.lifesim;
+package com.hunterdavis.lifesim.util;
 
 import android.util.Log;
 
@@ -19,7 +19,7 @@ public class LoggingAndTime {
     public static final boolean loggingOnlyForSelectedTags = true;
 
     public static final Set<String> allowedTags = new HashSet<String>(Arrays.asList(
-            new String[] {"LifeScreen"}
+            new String[] {"LifeScreen", "EngineThread"}
     ));
 
     public static void logWithTiming(String tag, String message) {

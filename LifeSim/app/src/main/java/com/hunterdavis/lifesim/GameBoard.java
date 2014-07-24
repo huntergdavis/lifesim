@@ -1,5 +1,7 @@
 package com.hunterdavis.lifesim;
 
+import com.hunterdavis.lifesim.util.LoggingAndTime;
+
 import java.util.Arrays;
 
 /**
@@ -16,7 +18,7 @@ public class GameBoard implements java.io.Serializable {
 
     public GameBoard(int width, int height) {
 
-        LoggingAndTime.logWithTiming(TAG,"About to instantiate life matrix");
+        LoggingAndTime.logWithTiming(TAG, "About to instantiate life matrix");
         lifeMatrix = new Microbe[width][height];
         LoggingAndTime.logWithTiming(TAG,"Life Matrix Instantiated");
 

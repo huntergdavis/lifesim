@@ -1,4 +1,6 @@
-package com.hunterdavis.lifesim;
+package com.hunterdavis.lifesim.util;
+
+import com.hunterdavis.lifesim.util.Base64Coder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,7 +17,7 @@ public class SavingAndLoading {
     /** Read the object from Base64 string. */
     public static Object fromString( String s ) throws IOException,
             ClassNotFoundException {
-        byte [] data = Base64Coder.decode( s );
+        byte [] data = Base64Coder.decode(s);
         ObjectInputStream ois = new ObjectInputStream(
                 new ByteArrayInputStream(  data ) );
         Object o  = ois.readObject();

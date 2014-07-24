@@ -4,6 +4,12 @@ Right now, I'm just working on the simulator side.
 
 It's conway's game of life on a more massive scale, with a few twists.
 
+Here's a group of 960 microbes represented by their DNA
+![alt tag](https://raw.github.com/huntergdavis/lifesim/develop/artifacts/OneIterationRandomSet960.jpg)
+
+
+
+
 Simulation Strategy #1:
 
 1.  Game engine calls 'tick' on copy of gameboard to move the aging process one quantum for all objects on the gameboard

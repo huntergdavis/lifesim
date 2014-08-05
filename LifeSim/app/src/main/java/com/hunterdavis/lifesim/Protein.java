@@ -40,11 +40,12 @@ public class Protein implements java.io.Serializable {
         age++;
     }
 
+
     // returns 1 if things have changed, 0 if not. -1 if things went very badly?
     public int mutate(float percentage) {
 
         // mutation requires some degree of randomness
-        if(new Random().nextFloat() < percentage) {
+        if(new Random().nextFloat() > percentage) {
             return 0;
         }
 

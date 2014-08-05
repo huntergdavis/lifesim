@@ -39,11 +39,16 @@ public class GameEngine implements java.io.Serializable {
         // move the simulator forward one tick
         simulatorAgeInTicks++;
 
+        //LoggingAndTime.logWithTiming(TAG,"1 ticks have occurred");
+
+
         // set the preCalculatedGameBoard to the current game board
-        GameBoard preCalculateGameBoard = new GameBoard(currentGameBoard);
+        //GameBoard preCalculateGameBoard = new GameBoard(currentGameBoard);
 
         // do everything we think we should do
-        preCalculateGameBoard.tick();
+        //preCalculateGameBoard.tick();
+
+        // We can look into the future when we need to...
 
         // here's where we'll actually do some fonky simulator business
 

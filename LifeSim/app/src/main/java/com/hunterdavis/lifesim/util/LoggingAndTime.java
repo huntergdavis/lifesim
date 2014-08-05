@@ -16,7 +16,7 @@ public class LoggingAndTime {
     private static HashMap<String, Long> lastLogTimePerTag = new HashMap<String, Long>();
 
     public static final boolean loggingEnabled = true;
-    public static final boolean loggingOnlyForSelectedTags = true;
+    public static final boolean loggingOnlyForSelectedTags = false;
 
     public static final Set<String> allowedTags = new HashSet<String>(Arrays.asList(
             new String[] {"LifeScreen", "EngineThread"}

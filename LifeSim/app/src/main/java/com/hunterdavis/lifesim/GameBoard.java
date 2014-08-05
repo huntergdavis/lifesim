@@ -16,7 +16,13 @@ public class GameBoard implements java.io.Serializable {
     public int currentWidth;
     public int currentHeight;
 
+    public int accumulateX = 0;
+    public int accumulateY = 0;
+
     public GameBoard(int width, int height) {
+
+        currentWidth = width;
+        currentHeight = height;
 
         LoggingAndTime.logWithTiming(TAG, "About to instantiate life matrix");
         lifeMatrix = new Microbe[width][height];
@@ -46,13 +52,14 @@ public class GameBoard implements java.io.Serializable {
     }
 
     public void tick() {
-        LoggingAndTime.logWithTiming(TAG, "About to tick life matrix");
+
+        //LoggingAndTime.logWithTiming(TAG, "About to tick life matrix");
         for(int i = 0; i < currentWidth; i++) {
             for (int j=0;j<currentHeight;j++) {
                 lifeMatrix[i][j].tick();
             }
         }
-        LoggingAndTime.logWithTiming(TAG, "Finished ticking life matrix");
+        //LoggingAndTime.logWithTiming(TAG, "Finished ticking life matrix");
 
     }
 

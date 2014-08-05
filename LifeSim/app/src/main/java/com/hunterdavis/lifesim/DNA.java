@@ -1,5 +1,7 @@
 package com.hunterdavis.lifesim;
 
+import com.hunterdavis.lifesim.util.LoggingAndTime;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -11,7 +13,7 @@ public class DNA implements java.io.Serializable {
     public Protein proteinMatrix[][];
 
     public static final int PROTEIN_SIZE = 25;
-    public static int DEFAULT_MUTATION_RATE_PERCENTAGE = 25;
+    public static float DEFAULT_MUTATION_RATE_PERCENTAGE = .10f;
 
 
     public DNA() {

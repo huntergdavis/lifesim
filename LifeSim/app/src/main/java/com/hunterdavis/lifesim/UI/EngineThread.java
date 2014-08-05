@@ -4,21 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.os.Environment;
 import android.os.Handler;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import com.hunterdavis.lifesim.DNA;
 import com.hunterdavis.lifesim.GameEngine;
-import com.hunterdavis.lifesim.Protein;
-import com.hunterdavis.lifesim.util.LoggingAndTime;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by hunter on 7/23/14.
@@ -27,20 +17,18 @@ import java.io.IOException;
 class EngineThread extends Thread {
 
     private static final String TAG = "EngineThread";
-    private int bitmapWidth = 1000;
-    private int bitmapHeight = 600;
-
-    private int canvasWidth = 1000;
-    private int canvasHeight = 600;
-
-    private static final int SPEED = 2;
-    private boolean run = false;
+    private static boolean run = false;
+    private GameEngine testEngine;
     SurfaceHolder sh;
     Context ctx;
     Handler localHandler;
-
-    private GameEngine testEngine;
+    private int bitmapWidth = 1000;
+    private int bitmapHeight = 600;
+    private int canvasWidth = 1000;
+    private int canvasHeight = 600;
     private Bitmap backingBitmap;
+
+    private int xAccumulator = 0;
 
     public EngineThread(SurfaceHolder surfaceHolder, Context context,
                         Handler handler) {
@@ -54,47 +42,25 @@ class EngineThread extends Thread {
 
         // create a game simulation
         testEngine = new GameEngine();
-        refreshMicrobeViewOnBackingBitmap();
-
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        backingBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-
-        //you can create a new file name "test.jpg" in sdcard folder.
-        File f = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "LifeTest.jpg");
-        try {
-            f.createNewFile();
-            //write the bytes in file
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-
-            // remember close de FileOutput
-            fo.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
     }
 
     public void run() {
+
         while (run) {
             if (!sh.getSurface().isValid())
                 continue;
+            testEngine.tick();
 
             Canvas c = null;
-                // 1000 ticks
-                for (int i = 0; i < 1000; i++) {
-                    testEngine.tick();
-                }
-
-                    synchronized (sh) {
-                        c = sh.lockCanvas(null);
-                        doDraw(c);
-                    }
+            synchronized (sh) {
+                c = sh.lockCanvas(null);
+                doDraw(c);
                 if (c != null) {
                     sh.unlockCanvasAndPost(c);
                 }
+            }
+
 
         }
     }
@@ -104,26 +70,30 @@ class EngineThread extends Thread {
     }
 
     public void setSurfaceSize(int width, int height) {
-            canvasWidth = width;
-            canvasHeight = height;
+        canvasWidth = width;
+        canvasHeight = height;
     }
 
     private void doDraw(Canvas canvas) {
+
         // the world has turned, what's up?
         refreshMicrobeViewOnBackingBitmap();
         canvas.drawBitmap(backingBitmap, 0, 0, null);
-        Paint paint = new Paint();
-        paint.setARGB(3,35,123,124);
-        canvas.drawRect(0, 0, 300, 300, paint);
+    }
 
+    private void refreshMicrobeViewOnBackingBitmap(int lowx, int highx) {
+        for (int i = lowx; i < highx; i++) {
+            for (int j = 0; j < 600; j++) {
+                backingBitmap.setPixel(i, j, getColorForPixelBasedOnCurrentGameBoard(i, j));
+            }
+        }
 
     }
 
     private void refreshMicrobeViewOnBackingBitmap() {
 
-        // subtract 1 for zero indexing on arrays vs visual xml items
-        for (int i = 0; i < bitmapWidth; i++) {
-            for (int j = 0; j < bitmapHeight; j++) {
+        for (int i = 0; i < 1000; i++) {
+            for (int j = 0; j < 600; j++) {
                 backingBitmap.setPixel(i, j, getColorForPixelBasedOnCurrentGameBoard(i, j));
             }
         }
@@ -140,20 +110,45 @@ class EngineThread extends Thread {
         int innerOffsetY = y % DNA.PROTEIN_SIZE;
 
         int proteinTypeAsInt = testEngine.currentGameBoard.lifeMatrix[bugNumberX][bugNumberY].dna.proteinMatrix[innerOffsetX][innerOffsetY].getCurrentProteinTypeAsInt();
-        int colorPercentage = ((proteinTypeAsInt / Protein.getNumberOfProteinTypes()) * 255);
 
-        int lowThreshold = colorPercentage / 3;
+        // more intelligent coloring for known types:
+        switch (proteinTypeAsInt) {
+            case 0:
+                // aggressive proteins
+                return Color.RED;
+            case 1:
+                // passive proteins
+                return Color.BLUE;
+            case 2:
+                // stable proteins
+                return Color.GRAY;
+            case 3:
+                // unstable proteins
+                return Color.DKGRAY;
+            case 4:
+                // movement proteins
+                return Color.YELLOW;
+            case 5:
+                // defence proteins
+                return Color.LTGRAY;
+            case 6:
+                // nourishment proteins
+                return Color.MAGENTA;
+            case 7:
+                // transcription proteins
+                return Color.WHITE;
+            case 8:
+                // controller proteins
+                return Color.CYAN;
+            case 9:
+                // efficiency proteins
+                return Color.TRANSPARENT;
+            case 10:
+                // storage proteins
+                return Color.BLACK;
 
-        // red, green,blue as percentages.
-        if (proteinTypeAsInt < lowThreshold) {
-            // red set, with some variation
-            return Color.rgb(colorPercentage, lowThreshold,lowThreshold);
-        } else if (proteinTypeAsInt < 2 * lowThreshold) {
-            // blue set, with some variation
-            return Color.rgb(lowThreshold, lowThreshold, colorPercentage);
-        } else {
-            // green set
-            return Color.rgb(lowThreshold, colorPercentage, lowThreshold);
+            default:
+                return Color.BLACK;
         }
     }
 }
